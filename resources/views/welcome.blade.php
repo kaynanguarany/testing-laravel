@@ -75,7 +75,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    <a href="/feedback">Click me</a>
                 </div>
 
                 <div class="links">
