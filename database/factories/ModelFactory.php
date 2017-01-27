@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +24,14 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 
 $factory->define(App\Article::class, function (Faker\Generator $faker) {
-    static $password;
-
     return [
         'title' => $faker->sentence,
+    ];
+});
+
+$factory->define(App\Team::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'size' => 5
     ];
 });
