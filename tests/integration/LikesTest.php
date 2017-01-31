@@ -5,95 +5,70 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class LikesTest extends TestCase
 {
     use DatabaseTransactions;
-    
+
+    protected $post;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->post = factory(App\Post::class)->create();
+
+        $this->signIn();
+    }
+
     /** @test */
     public function a_user_can_like_a_post()
     {
-        //given I have a post
-        $post = factory(App\Post::class)->create();
-
-        //and a user
-        $user = factory(App\User::class)->create();
-
-        //and  that user is logged in
-        $this->actingAs($user);
-
         //when they like a post
-        $post->like();
+        $this->post->like();
 
         //then we should see evidence in the database, and the post should be liked.
         $this->seeInDatabase('likes', [
-            'user_id' => $user->id,
-            'likeable_id' => $post->id,
-            'likeable_type' => get_class($post)
+            'user_id' => $this->user->id,
+            'likeable_id' => $this->post->id,
+            'likeable_type' => get_class($this->post)
         ]);
 
-        $this->assertTrue($post->isLiked());
+        $this->assertTrue($this->post->isLiked());
     }
 
     /** @test */
     public function a_user_can_unlike_a_post()
     {
-        //given I have a post
-        $post = factory(App\Post::class)->create();
-
-        //and a user
-        $user = factory(App\User::class)->create();
-
-        //and  that user is logged in
-        $this->actingAs($user);
-
         //when they like a post
-        $post->like();
-        $post->unlike();
+        $this->post->like();
+        $this->post->unlike();
 
         //then we should see evidence in the database, and the post should be liked.
         $this->notSeeInDatabase('likes', [
-            'user_id' => $user->id,
-            'likeable_id' => $post->id,
-            'likeable_type' => get_class($post)
+            'user_id' => $this->user->id,
+            'likeable_id' => $this->post->id,
+            'likeable_type' => get_class($this->post)
         ]);
 
-        $this->assertFalse($post->isLiked());
+        $this->assertFalse($this->post->isLiked());
     }
 
     /** @test */
     public function a_user_may_toggle_a_posts_like_status()
     {
-        //given I have a post
-        $post = factory(App\Post::class)->create();
-
-        //and a user
-        $user = factory(App\User::class)->create();
-
-        //and  that user is logged in
-        $this->actingAs($user);
-
         //when they like a post
-        $post->toggle();
+        $this->post->toggle();
 
-        $this->assertTrue($post->isLiked());
+        $this->assertTrue($this->post->isLiked());
 
-        $post->toggle();
+        $this->post->toggle();
 
-        $this->assertFalse($post->isLiked());
+        $this->assertFalse($this->post->isLiked());
     }
 
     /** @test */
     public function a_post_knows_how_many_likes_it_has()
     {
-        //given I have a post
-        $post = factory(App\Post::class)->create();
-
-        //and a user
-        $user = factory(App\User::class)->create();
-
-        //and  that user is logged in
-        $this->actingAs($user);
-
         //when they like a post
-        $post->toggle();
+        $this->post->toggle();
 
-        $this->assertEquals(1, $post->likesCount);
+        $this->assertEquals(1, $this->post->likesCount);
     }
 }
